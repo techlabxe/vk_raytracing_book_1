@@ -1,0 +1,98 @@
+#version 460
+#extension GL_EXT_ray_tracing : enable
+#extension GL_GOOGLE_include_directive : enable
+#include "rtcommon.glsl"
+
+layout(location = 0) rayPayloadEXT MyHitPayload_NR payload;
+layout(location = 1) rayPayloadEXT MyShadowPayload shadowPayload;
+
+#include "shadowUtil.glsl"
+#include "shootSecondRays.glsl"
+
+vec3 GetShadowRay(inout uint randSeed, bool usePointLight) {
+  // ワールド空間でのプライマリレイの衝突点.
+  vec3 worldPosition = payload.shadowRayOrigin;
+  if(usePointLight == false) {
+    // 平行光源でシャドウ判定.
+    return payload.shadowRayDirection;
+  } else {
+    // ポイントライトでシャドウ判定.
+    vec3 pointLightPosition = sceneParams.pointLightPosition.xyz;
+    vec3 toPointLightDir = normalize(pointLightPosition - worldPosition);
+#if 0  // ハードシャドウのとき.
+    return toPointLightDir;
+#else
+    // 光源に向けて散らしたベクトルを生成.
+    vec3 perpL = cross(toPointLightDir, vec3(0, 1, 0));
+    if( all( equal(perpL, vec3(0.0)) ) ) {
+        perpL.x = 1.0;
+    }
+    float radius = 1.0;
+    vec3 toLightEdge = normalize((pointLightPosition + perpL * radius) - worldPosition.xyz);
+    float coneAngle = acos(dot(toPointLightDir, toLightEdge));
+    return getConeSample(randSeed, toPointLightDir, coneAngle);
+#endif
+  }
+  return vec3(0);
+}
+
+void main() {
+  const vec2 pixelCenter = vec2(gl_LaunchIDEXT.xy) + vec2(0.5);
+  const vec2 screenPos = pixelCenter / vec2(gl_LaunchSizeEXT.xy);
+  vec2 d = screenPos * 2.0 - 1.0;
+
+  vec4 origin = sceneParams.mtxViewInv * vec4(0, 0, 0, 1);
+  vec4 target = sceneParams.mtxProjInv * vec4(d.x, -d.y, 1, 1);
+  vec4 direction = sceneParams.mtxViewInv * vec4(target.xyz, 0);
+  direction.xyz = normalize(direction.xyz);
+
+  float tmin = 0.00;
+  float tmax = 10000.0;
+  uint cullMask = 0xFF;
+  uint rayFlags = gl_RayFlagsOpaqueEXT;
+
+  // ポイントライトモードのときは、ポイントライト位置を描画する.
+
+  bool usePointLight = sceneParams.shaderFlags.y > 0;
+  if(usePointLight == false) {
+    cullMask &= ~0x01;
+  }
+
+  // ペイロード初期化.
+  payload.color = vec3(0);
+  payload.shadowRayOrigin = vec3(0);
+  payload.shadowRayDirection = vec3(0);
+
+  traceRayEXT(
+    topLevelAS,
+    rayFlags,  cullMask,  0, 0, 0,
+    origin.xyz,
+    tmin,
+    direction.xyz,
+    tmax,
+    0
+  );
+  vec3 color = payload.color;
+  vec3 hitWorldPosition = payload.shadowRayOrigin;
+
+  // シャドウの計算.
+  uint randSeed = randomU(hitWorldPosition.xz * 0.1);
+
+  bool isShadow = false;
+  if( length(payload.shadowRayDirection) > 0 ) {
+    const int shadowPayloadLocation = 1;
+    uint shadowRayFlags = gl_RayFlagsSkipClosestHitShaderEXT | gl_RayFlagsTerminateOnFirstHitEXT;
+
+    uint shadowRayCount = sceneParams.shaderFlags.z;
+    for(uint i=0;i<shadowRayCount;++i) {
+      vec3 rayDirection = GetShadowRay(randSeed, usePointLight);
+      isShadow = isShadow || ShootShadowRay(hitWorldPosition, rayDirection, shadowRayFlags);
+    }
+  }
+
+  if( isShadow ) {
+    color *= 0.8;
+  }
+
+  imageStore(image, ivec2(gl_LaunchIDEXT.xy), vec4(color, 1.0));
+}

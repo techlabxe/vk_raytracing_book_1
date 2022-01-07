@@ -1,0 +1,58 @@
+#version 460
+#extension GL_EXT_ray_tracing : enable
+#extension GL_GOOGLE_include_directive : enable
+#include "rtcommon.glsl"
+
+/* 再帰処理をしない版 */
+struct HitPayloadWithState {
+  vec3 color;
+  float contributionFactor;
+  vec3 nextRayOrigin;
+  vec3 nextRayDirection;
+};
+
+layout(location = 0) rayPayloadEXT HitPayloadWithState payload;
+
+void main() {
+  const vec2 pixelCenter = vec2(gl_LaunchIDEXT.xy) + vec2(0.5);
+  const vec2 screenPos = pixelCenter / vec2(gl_LaunchSizeEXT.xy);
+  vec2 d = screenPos * 2.0 - 1.0;
+
+  vec4 origin = sceneParams.mtxViewInv * vec4(0, 0, 0, 1);
+  vec4 target = sceneParams.mtxProjInv * vec4(d.x, -d.y, 1, 1);
+  vec4 direction = sceneParams.mtxViewInv * vec4(target.xyz, 0);
+  direction.xyz = normalize(direction.xyz);
+
+  float tmin = 0.001;
+  float tmax = 10000.0;
+  uint cullMask = 0xFF; // No cull
+  uint rayFlags = gl_RayFlagsNoneEXT;
+  //rayFlags |= gl_RayFlagsCullBackFacingTrianglesEXT;
+
+  // 最初のレイのセットアップ.
+  payload.nextRayOrigin = origin.xyz;
+  payload.nextRayDirection = direction.xyz;
+  payload.contributionFactor = 1.0;
+  payload.color = vec3(0.0);
+
+  const int PayloadLocation = 0;
+  const int maxLevel = 5;
+  int level = 0;
+  float contribution = 1.0;
+  vec3 color = vec3(0.0);
+  // ループでレイトレーシングを実行する.
+  while(
+    length(payload.nextRayDirection) > 0.1 &&
+    level < maxLevel
+  ) {
+    traceRayEXT(
+      topLevelAS, rayFlags, cullMask, 0, 0, 0,
+      payload.nextRayOrigin, tmin, payload.nextRayDirection, tmax,
+      PayloadLocation );
+    color += contribution * payload.color;
+    contribution *= payload.contributionFactor;
+    level++;
+  }
+
+  imageStore(image, ivec2(gl_LaunchIDEXT.xy), vec4(color, 1.0));
+}

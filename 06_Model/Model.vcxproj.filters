@@ -1,0 +1,225 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="ソース ファイル\Common">
+      <UniqueIdentifier>{cfb0de11-6ab3-42cf-b604-d3f0efa1ffd6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Common">
+      <UniqueIdentifier>{f1d217e3-b625-4c4e-a5ab-ec8eaa8039a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Externals">
+      <UniqueIdentifier>{55617c16-f4e9-4e9e-9e84-bf35291b3db3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Externals">
+      <UniqueIdentifier>{7ded4549-e6a3-41f7-b473-7c2d6e42ddb5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Externals\imgui">
+      <UniqueIdentifier>{1edba397-8b72-408e-a380-bc6693dc204a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Externals\nvidia_volk">
+      <UniqueIdentifier>{b358c2cf-08a2-4c53-a762-3f4b63740d0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Externals\imgui">
+      <UniqueIdentifier>{bac2fd4d-0297-45b6-8606-753cd1fb12bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Externals\nvidia_volk">
+      <UniqueIdentifier>{742b6b86-7cdb-4832-b339-186744a58e50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shaders">
+      <UniqueIdentifier>{e09c7fab-2ac1-4829-9939-451d125efec7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Common\util">
+      <UniqueIdentifier>{b020f606-7b3c-4b8f-9287-e12bb3071f99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Common\util">
+      <UniqueIdentifier>{b96c6d4a-abb0-45aa-82d8-3b8c4b7d082b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Common\scene">
+      <UniqueIdentifier>{26ca1e98-dfe4-4600-8463-34085bbad9b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Common\scene">
+      <UniqueIdentifier>{e9dd8252-6c0d-4fab-8f05-3ff0831109b7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelScene.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\src\ShaderGroupHelper.cpp">
+      <Filter>ソース ファイル\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\src\VkrayBookUtility.cpp">
+      <Filter>ソース ファイル\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\src\AccelerationStructure.cpp">
+      <Filter>ソース ファイル\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\src\BookFramework.cpp">
+      <Filter>ソース ファイル\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\src\Camera.cpp">
+      <Filter>ソース ファイル\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\src\GraphicsDevice.cpp">
+      <Filter>ソース ファイル\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Externals\imgui\imgui.cpp">
+      <Filter>ソース ファイル\Externals\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Externals\imgui\imgui_draw.cpp">
+      <Filter>ソース ファイル\Externals\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Externals\imgui\imgui_tables.cpp">
+      <Filter>ソース ファイル\Externals\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Externals\imgui\imgui_widgets.cpp">
+      <Filter>ソース ファイル\Externals\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Externals\imgui\backends\imgui_impl_glfw.cpp">
+      <Filter>ソース ファイル\Externals\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Externals\imgui\backends\imgui_impl_vulkan.cpp">
+      <Filter>ソース ファイル\Externals\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Externals\nvidia_volk\extensions_vk.cpp">
+      <Filter>ソース ファイル\Externals\nvidia_volk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\src\util\VkrModel.cpp">
+      <Filter>ソース ファイル\Common\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\src\scene\SceneObject.cpp">
+      <Filter>ソース ファイル\Common\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\src\scene\ModelMesh.cpp">
+      <Filter>ソース ファイル\Common\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\src\scene\SimplePolygonMesh.cpp">
+      <Filter>ソース ファイル\Common\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\src\scene\ProcedualMesh.cpp">
+      <Filter>ソース ファイル\Common\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\src\MaterialManager.cpp">
+      <Filter>ソース ファイル\Common</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ModelScene.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\include\GraphicsDevice.h">
+      <Filter>ヘッダー ファイル\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\include\ShaderGroupHelper.h">
+      <Filter>ヘッダー ファイル\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\include\VkrayBookUtility.h">
+      <Filter>ヘッダー ファイル\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\include\BookFramework.h">
+      <Filter>ヘッダー ファイル\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\include\Camera.h">
+      <Filter>ヘッダー ファイル\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\include\AccelerationStructure.h">
+      <Filter>ヘッダー ファイル\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Externals\imgui\imstb_truetype.h">
+      <Filter>ヘッダー ファイル\Externals\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Externals\imgui\imconfig.h">
+      <Filter>ヘッダー ファイル\Externals\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Externals\imgui\imgui.h">
+      <Filter>ヘッダー ファイル\Externals\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Externals\imgui\imgui_internal.h">
+      <Filter>ヘッダー ファイル\Externals\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Externals\imgui\imstb_rectpack.h">
+      <Filter>ヘッダー ファイル\Externals\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Externals\imgui\imstb_textedit.h">
+      <Filter>ヘッダー ファイル\Externals\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Externals\imgui\backends\imgui_impl_glfw.h">
+      <Filter>ヘッダー ファイル\Externals\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Externals\imgui\backends\imgui_impl_vulkan.h">
+      <Filter>ヘッダー ファイル\Externals\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Externals\nvidia_volk\extensions_vk.hpp">
+      <Filter>ヘッダー ファイル\Externals\nvidia_volk</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\include\util\VkrModel.h">
+      <Filter>ヘッダー ファイル\Common\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\include\MaterialManager.h">
+      <Filter>ヘッダー ファイル\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\include\scene\SceneObject.h">
+      <Filter>ヘッダー ファイル\Common\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\include\scene\SimplePolygonMesh.h">
+      <Filter>ヘッダー ファイル\Common\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\include\scene\ModelMesh.h">
+      <Filter>ヘッダー ファイル\Common\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\include\scene\ProcedualMesh.h">
+      <Filter>ヘッダー ファイル\Common\scene</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="shaders\chitPlane.rchit">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\chitModel.rchit">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\rtcommon.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\raygen.rgen">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\shadowMiss.rmiss">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\miss.rmiss">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\computeSkinning.comp">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\rayhitPayload.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\fetchVertex.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\calcLighting.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\shootSecondRays.glsl">
+      <Filter>shaders</Filter>
+    </None>
+  </ItemGroup>
+</Project>

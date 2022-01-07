@@ -1,0 +1,75 @@
+#version 460
+#extension GL_EXT_ray_tracing : enable
+#extension GL_EXT_buffer_reference : enable
+#extension GL_EXT_scalar_block_layout : enable
+#extension GL_EXT_shader_explicit_arithmetic_types_int64 : enable
+
+layout(local_size_x=1,local_size_y=1) in;
+
+layout(std430,set=0, binding=0) buffer SrcPositionBuffer { float srcPositionBuffer[]; };
+layout(std430,set=0, binding=1) buffer SrcNormalBuffer { float srcNormalBuffer[]; };
+layout(std430,set=0, binding=2) buffer SrcJointWeightsBuffer { vec4 srcJointWeightsBuffer[]; };
+layout(std430,set=0, binding=3) buffer SrcJointIndicesBuffer { ivec4 srcJointIndicesBuffer[]; };
+layout(std430,set=0, binding=4) buffer SkinnedMatricesBuffer { mat4 skinnedMatrices[]; };
+
+layout(std430,set=0, binding=5) buffer DstPositionBuffer { float dstPositionBuffer[]; };
+layout(std430,set=0, binding=6) buffer DstNormalBuffer { float dstNormalBuffer[]; };
+
+struct Vertex {
+  vec3 Position;
+  vec3 Normal;
+};
+
+Vertex GetVertex(uint index) {
+  Vertex v;
+  v.Position.x = srcPositionBuffer[3*index+0];
+  v.Position.y = srcPositionBuffer[3*index+1];
+  v.Position.z = srcPositionBuffer[3*index+2];
+  v.Normal.x = srcNormalBuffer[3*index+0];
+  v.Normal.y = srcNormalBuffer[3*index+1];
+  v.Normal.z = srcNormalBuffer[3*index+2];
+
+  return v;
+}
+
+void WriteVertex(uint index, Vertex v) {
+  uint idx = 3*index;
+  dstPositionBuffer[idx+0] = v.Position.x;
+  dstPositionBuffer[idx+1] = v.Position.y;
+  dstPositionBuffer[idx+2] = v.Position.z;
+
+  dstNormalBuffer[idx+0] = v.Normal.x;
+  dstNormalBuffer[idx+1] = v.Normal.y;
+  dstNormalBuffer[idx+2] = v.Normal.z;
+}
+
+
+void main() {
+  uint index = gl_GlobalInvocationID.x;
+  Vertex v = GetVertex(index);
+
+  ivec4 jointIndices = srcJointIndicesBuffer[index];
+  vec4  jointWeights = srcJointWeightsBuffer[index];
+
+  float weights[4] = {
+	jointWeights.x,jointWeights.y,jointWeights.z,jointWeights.w,
+  };
+  mat4 matrices[4] = {
+	skinnedMatrices[jointIndices.x],
+	skinnedMatrices[jointIndices.y],
+	skinnedMatrices[jointIndices.z],
+	skinnedMatrices[jointIndices.w],
+  };
+
+  mat4 mtx = mat4(0);
+  for(int i=0;i<4;++i) {
+	mtx += matrices[i] * weights[i];
+  }
+
+  vec4 deformPos = mtx * vec4(v.Position, 1.0);
+  vec3 deformNrm = mat3(mtx) * v.Normal;
+
+  v.Position = deformPos.xyz;
+  v.Normal = normalize(deformNrm);
+  WriteVertex(index, v);
+}

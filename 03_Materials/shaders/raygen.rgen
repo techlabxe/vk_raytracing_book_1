@@ -1,0 +1,36 @@
+#version 460
+#extension GL_EXT_ray_tracing : enable
+#extension GL_GOOGLE_include_directive : enable
+#include "rtcommon.glsl"
+
+layout(location = 0) rayPayloadEXT MyHitPayload payload;
+
+void main() {
+  const vec2 pixelCenter = vec2(gl_LaunchIDEXT.xy) + vec2(0.5);
+  const vec2 screenPos = pixelCenter / vec2(gl_LaunchSizeEXT.xy);
+  vec2 d = screenPos * 2.0 - 1.0;
+
+  vec4 origin = sceneParams.mtxViewInv * vec4(0, 0, 0, 1);
+  vec4 target = sceneParams.mtxProjInv * vec4(d.x, -d.y, 1, 1);
+  vec4 direction = sceneParams.mtxViewInv * vec4(target.xyz, 0);
+  direction.xyz = normalize(direction.xyz);
+
+  float tmin = 0.00;
+  float tmax = 10000.0;
+  payload.recursive = 5;
+
+  traceRayEXT(
+    topLevelAS,
+    gl_RayFlagsOpaqueEXT,
+    0xff,
+    0,
+    0,
+    0,
+    origin.xyz,
+    tmin,
+    direction.xyz,
+    tmax,
+    0
+  );
+  imageStore(image, ivec2(gl_LaunchIDEXT.xy), vec4(payload.hitValue, 1.0));
+}

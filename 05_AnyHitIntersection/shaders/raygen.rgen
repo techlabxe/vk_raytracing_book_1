@@ -1,0 +1,50 @@
+#version 460
+#extension GL_EXT_ray_tracing : enable
+#extension GL_GOOGLE_include_directive : enable
+#include "rtcommon.glsl"
+
+layout(location = 0) rayPayloadEXT MyHitPayload payload;
+layout(location = 1) rayPayloadEXT MyShadowPayload shadowPayload;
+
+#include "shootSecondRays.glsl"
+
+void main() {
+  const vec2 pixelCenter = vec2(gl_LaunchIDEXT.xy) + vec2(0.5);
+  const vec2 screenPos = pixelCenter / vec2(gl_LaunchSizeEXT.xy);
+  vec2 d = screenPos * 2.0 - 1.0;
+
+  vec4 origin = sceneParams.mtxViewInv * vec4(0, 0, 0, 1);
+  vec4 target = sceneParams.mtxProjInv * vec4(d.x, -d.y, 1, 1);
+  vec4 direction = sceneParams.mtxViewInv * vec4(target.xyz, 0);
+  direction.xyz = normalize(direction.xyz);
+
+  const int colorPayloadLocation = 0;
+  float tmin = 0.01;
+  float tmax = 10000.0;
+  uint cullMask = 0xFF;
+  // Any-Hit シェーダー使用のため、gl_RayFlagsOpaqueEXTは使わない.
+  uint rayFlags = gl_RayFlagsNoneEXT; 
+
+  payload.hitValue = vec3(0);
+  payload.rayOrigin = vec3(0);
+  payload.rayDirection = vec3(0);
+  
+  // 物体との衝突を判定して色を取得.
+  traceRayEXT(
+    topLevelAS, rayFlags, cullMask, 0, 0, 0,
+    origin.xyz, tmin, direction.xyz, tmax,
+    colorPayloadLocation
+  );
+
+  if(length(payload.rayDirection) > 0 ) 
+  {
+    // シャドウの計算.
+    // Any-Hit シェーダー使用のため、gl_RayFlagsOpaqueEXTは使わない.
+    uint shadowRayFlags = gl_RayFlagsNoneEXT;
+    bool isShadow = ShootShadowRay(payload.rayOrigin, payload.rayDirection, shadowRayFlags);
+    if( isShadow ) {
+      payload.hitValue *= 0.8;
+    }
+  }
+  imageStore(image, ivec2(gl_LaunchIDEXT.xy), vec4(payload.hitValue, 1.0));
+}
